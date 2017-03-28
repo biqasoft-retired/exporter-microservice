@@ -27,7 +27,7 @@ import java.nio.file.Files;
  * Created by ya_000 on 10/5/2015.
  */
 @RestController
-@RequestMapping("/export")
+@RequestMapping("/v1//export")
 public class ExportController {
 
     private PhantomJsHelper phantomJsHelper;
