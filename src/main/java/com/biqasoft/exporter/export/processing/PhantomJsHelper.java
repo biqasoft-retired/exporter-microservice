@@ -5,6 +5,7 @@
 package com.biqasoft.exporter.export.processing;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +24,19 @@ import java.io.IOException;
 @Service
 public class PhantomJsHelper {
 
-    // this is export script which will convert html to pdf
-    private final Resource uri = new ClassPathResource("javascript/rasterize.js");
+    private File jsScriptOnFileSystem;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    public PhantomJsHelper() {
+        try {
+            jsScriptOnFileSystem = File.createTempFile("rasterize", ".js");
+            final Resource uri = new ClassPathResource("javascript/rasterize.js");
+            FileUtils.writeByteArrayToFile(jsScriptOnFileSystem, IOUtils.toByteArray(uri.getInputStream()));
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 
     /**
      * Convert HTML as string to PDF
@@ -55,14 +65,10 @@ public class PhantomJsHelper {
 
         ProcessBuilder pb;
 
-        try {
-            // export can not use absolute path with file://
-            // may be bug
-            // only read file from the same directory
-            pb = new ProcessBuilder("phantomjs", uri.getFile().getAbsolutePath(), tempFile.getName(), outputFile.getName());
-        } catch (IOException e) {
-            throw new InternalSeverErrorProcessingRequestException(e.getMessage());
-        }
+        // export can not use absolute path with file://
+        // may be bug
+        // only read file from the same directory
+        pb = new ProcessBuilder("phantomjs", jsScriptOnFileSystem.getAbsolutePath(), tempFile.getName(), outputFile.getName());
 
         // logs from process to system output
         pb.inheritIO();

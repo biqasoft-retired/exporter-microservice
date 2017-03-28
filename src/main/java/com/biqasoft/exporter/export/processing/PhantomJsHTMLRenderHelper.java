@@ -4,14 +4,15 @@
 
 package com.biqasoft.exporter.export.processing;
 
+import com.biqasoft.common.exceptions.InternalSeverErrorProcessingRequestException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import com.biqasoft.common.exceptions.InternalSeverErrorProcessingRequestException;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,12 +25,23 @@ import java.io.IOException;
 public class PhantomJsHTMLRenderHelper {
 
     // this is export script which will convert html to pdf
-    private final Resource uri = new ClassPathResource("javascript/render_js.js");
+    private File jsScriptOnFileSystem;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    public PhantomJsHTMLRenderHelper() {
+        try {
+            jsScriptOnFileSystem = File.createTempFile("render_js", ".js");
+            final Resource uri = new ClassPathResource("javascript/render_js.js");
+            FileUtils.writeByteArrayToFile(jsScriptOnFileSystem, IOUtils.toByteArray(uri.getInputStream()));
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     /**
      * Convert HTML as string to HTML rendered (with executed JS etc...)
+     *
      * @param html html which should be converted to some another format
      * @return link to converted html file to pdf
      */
@@ -54,14 +66,10 @@ public class PhantomJsHTMLRenderHelper {
 
         ProcessBuilder pb;
 
-        try {
-            // export can not use absolute path with file://
-            // may be bug
-            // only read file from the same directory
-            pb = new ProcessBuilder("phantomjs", uri.getFile().getAbsolutePath(), tempFile.getName(), outputFile.getName());
-        } catch (IOException e) {
-            throw new InternalSeverErrorProcessingRequestException(e.getMessage());
-        }
+        // export can not use absolute path with file://
+        // may be bug
+        // only read file from the same directory
+        pb = new ProcessBuilder("phantomjs", jsScriptOnFileSystem.getAbsolutePath(), tempFile.getName(), outputFile.getName());
 
         // logs from process to system output
         pb.inheritIO();
