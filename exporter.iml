@@ -25,16 +25,16 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="microservice" />
+    <orderEntry type="library" name="Maven: com.biqasoft:microservice:1.0-RELEASE" level="project" />
     <orderEntry type="module" module-name="microservice-communicator" />
     <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-commons:1.1.8.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-crypto:4.2.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: com.ecwid.consul:consul-api:1.1.11" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.0" level="project" />
-    <orderEntry type="module" module-name="common" />
+    <orderEntry type="library" name="Maven: com.biqasoft:common:1.0-RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-core:4.2.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
-    <orderEntry type="module" module-name="mongodb-core" />
+    <orderEntry type="library" name="Maven: com.biqasoft:mongodb-core:1.0-RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:3.4.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-mongodb:1.10.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:4.3.7.RELEASE" level="project" />
